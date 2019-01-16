@@ -1,5 +1,8 @@
 */secret*
 
+#webchecker project
+webchecker/websites.txt
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
