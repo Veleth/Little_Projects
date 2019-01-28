@@ -5,5 +5,5 @@ I may or may not expand the list in the future.
 1. [Webchecker](#WEBCHECKER)
 
 <a name="WEBCHECKER"><h3>Webchecker (2019-01-17)</h3></a>
-This program reads the list of URLs (by default from websites.txt) and constantly checks whether there has been an update to any of them. Upon updatei it notifies the user.
-Libraries used: `bs4`, `smtplib`, and `requests`.
+This program reads the list of URLs (by default from websites.txt) and constantly checks whether there has been an update to any of them. Upon update it notifies the user.
+Libraries used: `bs4`, `smtplib`, and `requests`. It also requires `lxml` to be present in order to parse the data.
