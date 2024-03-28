@@ -23,6 +23,6 @@ class EkwFetcher:
     self.driver.find_element(By.ID, 'wyszukaj').click()
     self.driver.find_element(By.ID, 'przyciskWydrukZwykly').click()
     self.driver.find_element(By.CSS_SELECTOR, 'td:nth-child(4) input:nth-child(7)').click()
-    html = self.driver.page_source
+    html = self.driver.find_element(By.ID, 'contentDzialu').get_attribute('innerHTML')
     self.driver.quit()
     return html
