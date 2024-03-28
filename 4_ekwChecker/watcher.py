@@ -43,13 +43,16 @@ def notify():
         print('Failed to send notification.')
 
 if __name__ == '__main__':
-    websiteContents = fetcher.fetchContents(os.getenv('EKW_DEPARTMENT'), os.getenv('EKW_REGISTRY_NUMBER'), os.getenv('EKW_CONTROL_DIGIT'))
-    hash = generateHash(websiteContents)
-    storedHash = checkLocalData()
-    if hash != storedHash:
-        storeData(hash)
-        notify()
-    time.sleep(int(os.getenv('TIMEOUT')))
+    while True:
+        websiteContents = fetcher.fetchContents(os.getenv('EKW_DEPARTMENT'), os.getenv('EKW_REGISTRY_NUMBER'), os.getenv('EKW_CONTROL_DIGIT'))
+        hash = generateHash(websiteContents)
+        print(f'Content fetched. Hash: {hash}')
+        storedHash = checkLocalData()
+        if hash != storedHash:
+            print(f'Hash does not match the old hash, {storedHash}. Storing new hash and sending notification.')
+            storeData(hash)
+            notify()
+        time.sleep(int(os.getenv('TIMEOUT')))
 
 
 
