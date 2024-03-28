@@ -32,7 +32,7 @@ def notify():
     data = {
         'token': os.getenv('PUSHOVER_TOKEN'),
         'user': os.getenv('PUSHOVER_USER'),
-        'message': 'TEST: EKW UPDATED'
+        'message': 'EKW UPDATED'
     }
 
     response = requests.post(url, data=data)

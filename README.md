@@ -30,5 +30,3 @@ As it happened, I became interested in one of these registries, and got very imp
 This project is loosely based on my trusty old [Webchecker](#WEBCHECKER), but is written a little bit better IMO, and relies on Pushover for notifications rather than SMTP.
 
 Side note - figuring out the notifications took like 80% of the development time. I mostly spent that time reading and being frustrated with Gmail, IFTTT, Sendmail, and others.
-
-Another side note - if used on a server with limited resources, you should consider adding options such as `headless` to the browser driver in ekwFetcher.py
