@@ -20,7 +20,7 @@ Sample data included to better showcase what kind of data I was dealing with and
 <a name="ELECTION"><h2>2023 Parliamentary Election Tracker (2023-10-16)</h2></a>
 This was a 1-day quick project that aimed to collect real-time polling data for the <a href="https://en.wikipedia.org/wiki/2023_Polish_parliamentary_election">2023 Polish parliamentary election</a>. The script fetched the data from the official <a href="https://wybory.gov.pl/sejmsenat2023/pl/sejm/wynik/pl">Electoral Commission website</a> as the votes were being counted and results published. The goal was to estimate the Parliament seat distribution with increasing accuracy as the data kept flowing in.
 
-<a name="EKWCHECKER"><h2>EKW Checker</h2></a>
+<a name="EKWCHECKER"><h2>EKW Checker (2024-03-28)</h2></a>
 KW (Księgi Wieczyste), also called Land Registers, are official public records concerning the ownership and other parameters of real estate properties. I assume this part does not need to be explained further.
 
 EKW is an online system that allows people to browse these records, but it doesn't provide a REST API to access them. There are some 3rd party APIs, but they cost way too much for any non-professional needs.
@@ -30,3 +30,5 @@ As it happened, I became interested in one of these registries, and got very imp
 This project is loosely based on my trusty old [Webchecker](#WEBCHECKER), but is written a little bit better IMO, and relies on Pushover for notifications rather than SMTP.
 
 Side note - figuring out the notifications took like 80% of the development time. I mostly spent that time reading and being frustrated with Gmail, IFTTT, Sendmail, and others.
+
+Another side note - if used on a server with limited resources, you should consider adding options such as `headless` to the browser driver in ekwFetcher.py
