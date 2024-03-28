@@ -8,7 +8,7 @@ from selenium.webdriver.firefox.options import Options
 class EkwFetcher:
   def __init__(self):
       options = Options()
-      options.headless = True
+      options.add_argument('--headless')
       self.driver = webdriver.Firefox(options=options)
 
   def fetchContents(self, department: str, registryNumber: str, controlDigit: str ) -> str:
