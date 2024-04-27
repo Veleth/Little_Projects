@@ -1,44 +1,70 @@
-import time                                                          
-import requests                                                 #downloading the site
-from bs4 import BeautifulSoup                                   #parsing the downloaded site
-import smtplib                                                  #notifying via email
+import hashlib
+import os
+import re
+import time
+from datetime import datetime
+from typing import NoReturn
 
-with open("secret.txt", "r") as secret:                         #get login and password for the email;
-    credentials = secret.readline().split(" ")
+import requests
+from dotenv import load_dotenv
+from bs4 import BeautifulSoup
 
-websites = {}                                                   #to store web addresses and contents
-timeout = 5                                                     #the script checks every website on the list every [timeout] seconds
-                                                                #NOTE: The "real" timeout will be longer depending on the amount of websites in websites.txt. Every website takes a short time to check
+load_dotenv()
 
-if __name__ == "__main__":
-    with open("websites.txt", "r") as file:                     #first loop to store data
-        for url in file.readlines():
-            if(url[-1:] == "\n"):                               #remove endline characters
-                url = url[:-1]
-            if(url[:4] != "http"):                              #add https:// if there's none
-                url = "https://"+url
-            response = requests.get(url)                        #download website
-            soup = BeautifulSoup(response.text, "lxml")         #parse the contents
-            websites[url] = str(soup)                           #include contents in the dictionary
-    
+def notify(url: str) -> NoReturn:
+    now = datetime.now()
+    pushover_url = 'https://api.pushover.net/1/messages.json'
+    data = {
+        'token': os.getenv('PUSHOVER_TOKEN'),
+        'user': os.getenv('PUSHOVER_USER'),
+        'message': f'{url} UPDATED'
+    }
 
-    server = smtplib.SMTP('smtp.gmail.com', 587)                #connect to the email service
-    server.starttls()
-    server.login(credentials[0], credentials[1])
-                
-    while(True):                                                #endless loop of checking the condition; CTRL+C to interrupt the program
-        for url in websites.keys():
-            response = requests.get(url) 
-            soup = BeautifulSoup(response.text, "lxml") 
-            if (websites[url] != str(soup)):                     #if the website has changed
-                websites[url] = str(soup)                        #update the data in the dict
-                msg = 'WEBSITE UPDATED\nGo check it out at '+url #subject \n message
-                sender = credentials[0]                          #FROM address
-                recipient = 'veleth@icloud.com'                  #TO address
-                server.sendmail(sender, recipient, msg)          #send email
-                print("UPDATE: ", url ,"\nNotification sent to ", recipient)
-        time.sleep(timeout)
+    response = requests.post(pushover_url, data=data, timeout=30)
+    if response.status_code == 200:
+        print(f'{now} Notification sent successfully!')
+    else:
+        print('Failed to send notification.')
 
-#1.NOTE: libraries might need to be installed separately. The easiest way is to get pip and >pip install [name]
-#2.NOTE: If you're using Gmail, you may need to enable "Less secure applications" to be able to log into your account, 
-#otherwise you may get an error "Username and password not accepted"
+def fetch_local_data(filename: str) -> str:
+    try:
+        with open(filename, 'r', encoding='utf-8') as file:
+            return file.read()
+    except FileNotFoundError:
+        return ''
+
+def store_data(filename, contents: str) -> NoReturn:
+    with open(filename, 'w', encoding='utf-8') as f:
+        f.write(contents)
+
+def generate_hash(value: str) -> str:
+    encoded = value.encode()
+    md5 = hashlib.md5(encoded)
+    return md5.hexdigest()
+
+
+def check_website(url: str) -> NoReturn:
+    response = requests.get(url, timeout=30)
+    url_without_protocol = url.split('//')[1] if '//' in url else url
+    filename = re.sub(r'\W+', '_', url_without_protocol)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    visible_text = soup.get_text()
+    current_hash = generate_hash(visible_text)
+    stored_hash = fetch_local_data(filename)
+    print(f'Content fetched from {url}. Hash: {current_hash}')
+    if current_hash != stored_hash:
+        print(f'Hash does not match the old hash, {stored_hash}. Storing new hash and sending notification.')
+        store_data(filename, current_hash)
+        notify(url)
+
+if __name__ == '__main__':
+    websites = os.getenv('WEBSITES')
+    if not websites:
+        print('No websites configured. Exiting.')
+        exit()
+
+    websites = [site for site in websites.split(',') if site]
+    while True:
+        for website in websites:
+            check_website(website)
+        time.sleep(int(os.getenv('TIMEOUT', 900)))
