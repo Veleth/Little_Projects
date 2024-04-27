@@ -7,10 +7,10 @@ I may or may not expand the list in the future.
 3. [Election Tracker](#ELECTION)
 4. [EKW Checker](#EKWCHECKER)
 
-<a name="WEBCHECKER"><h2>Webchecker (2019-01-17)</h2></a>
-This program reads the list of URLs (by default from websites.txt) and constantly checks whether there has been an update to any of them. Upon update it notifies the user.
+<a name="WEBCHECKER"><h2>Webchecker (2019-01-17, updated 2024-04-27)</h2></a>
+This program reads the list of URLs and constantly checks whether there has been an update to any of them. Upon update it notifies the user.
 
-Libraries used: `bs4`, `smtplib`, and `requests`. It also requires `lxml` to be present in order to parse the data.
+Libraries required: `bs4`, `dotenv`, and `requests`.
 
 <a name="BPCONVERTER"><h2>Blood Pressure Reading Converter (2021-04-12)</h2></a>
 This Jupyter script reads a CSV export from Apple Health data and converts the records to a more doctor-friendly format. Instead of an array of readings, you get an array of dates with a morning/evening column split.
